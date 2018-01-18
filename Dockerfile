@@ -15,7 +15,7 @@ ENV BITBUCKET_HOME=/var/atlassian/bitbucket \
     BITBUCKET_BACKUP_CLIENT_HOME=/opt/backupclient \
     BITBUCKET_BACKUP_CLIENT_VERSION=300300300
 
-# environment variables specific to Jira config files in s3
+# environment variables specific to Bitbucket config files in s3
 # ENVIRONMENT variable used for obtaining secrets in SSM
 ENV BITBUCKET_CONFIG=bitbucket.tgz \
     ENVIRONMENT=test   \
