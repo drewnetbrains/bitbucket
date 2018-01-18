@@ -70,7 +70,7 @@ if [ -n "${BITBUCKET_DELAYED_START}" ]; then
 fi
 
 # Download Atlassian required config files from s3
-/usr/bin/aws s3 cp s3://fathom-atlassian-ecs/BITBUCKET/${BITBUCKET_CONFIG} ${BITBUCKET_HOME}
+/usr/bin/aws s3 cp s3://fathom-atlassian-ecs/bitbucket/${BITBUCKET_CONFIG} ${BITBUCKET_HOME}
 /usr/bin/tar -xzf ${BITBUCKET_CONFIG} -C ${BITBUCKET_HOME}
 
 # Pull Atlassian secrets from parameter store
