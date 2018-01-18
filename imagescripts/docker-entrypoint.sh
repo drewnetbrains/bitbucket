@@ -69,6 +69,27 @@ if [ -n "${BITBUCKET_DELAYED_START}" ]; then
   sleep ${BITBUCKET_DELAYED_START}
 fi
 
+# Download Atlassian required config files from s3
+/usr/bin/aws s3 cp s3://fathom-atlassian-ecs/BITBUCKET/${BITBUCKET_CONFIG} ${BITBUCKET_HOME}
+/usr/bin/tar -xzf ${BITBUCKET_CONFIG} -C ${BITBUCKET_HOME}
+
+# Pull Atlassian secrets from parameter store
+AZ=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+AWSREGION=${AZ::-1}
+
+DATABASE_ENDPOINT=$(aws ssm get-parameters --names "${ENVIRONMENT}.atlassian.rds.db_host" --region ${AWSREGION} --with-decryption --query Parameters[0].Value --output text)
+DATABASE_USER=$(aws ssm get-parameters --names "${ENVIRONMENT}.atlassian.rds.db_user" --region ${AWSREGION} --with-decryption --query Parameters[0].Value --output text)
+DATABASE_PASSWORD=$(aws ssm get-parameters --names "${ENVIRONMENT}.atlassian.rds.password" --region ${AWSREGION} --with-decryption --query Parameters[0].Value --output text)
+DATABASE_NAME=${DATABASE_NAME}
+
+/bin/sed -i -e "s/DATABASE_ENDPOINT/$DATABASE_ENDPOINT/" \
+            -e "s/DATABASE_USER/$DATABASE_USER/" \
+            -e "s/DATABASE_PASSWORD/$DATABASE_PASSWORD/" \
+            -e "s/DATABASE_NAME/$DATABASE_NAME/" shared/bitbucket.properties
+
+/bin/rm -rf ${BITBUCKET_CONFIG}
+# End of aws section
+
 processBitbucketProxySettings
 
 # If there is a 'ssh' directory, copy it to /home/bitbucket/.ssh

@@ -15,6 +15,12 @@ ENV BITBUCKET_HOME=/var/atlassian/bitbucket \
     BITBUCKET_BACKUP_CLIENT_HOME=/opt/backupclient \
     BITBUCKET_BACKUP_CLIENT_VERSION=300300300
 
+# environment variables specific to Jira config files in s3
+# ENVIRONMENT variable used for obtaining secrets in SSM
+ENV BITBUCKET_CONFIG=bitbucket.tgz \
+    ENVIRONMENT=test   \
+    DATABASE_NAME=bitbucketdb
+
 RUN export MYSQL_DRIVER_VERSION=5.1.44 && \
     export CONTAINER_USER=bitbucket &&  \
     export CONTAINER_GROUP=bitbucket &&  \
@@ -77,6 +83,13 @@ RUN mkdir -p ${BITBUCKET_BACKUP_CLIENT_HOME} && \
     unzip -d ${BITBUCKET_BACKUP_CLIENT_HOME} /tmp/bitbucket-backup-distribution.zip && \
     mv /opt/backupclient/$(ls /opt/backupclient/) /opt/backupclient/bitbucket-backup-client && \
     chown -R bitbucket:bitbucket ${BITBUCKET_BACKUP_CLIENT_HOME}
+
+# Install aws cli
+USER root
+RUN apk add --update \
+    python \
+    py-pip
+RUN pip install awscli
 
 # Remove obsolete packages
 RUN apk del \
