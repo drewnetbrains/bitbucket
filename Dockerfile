@@ -17,7 +17,7 @@ ENV BITBUCKET_HOME=/var/atlassian/bitbucket \
 
 # environment variables specific to Bitbucket config files in s3
 # ENVIRONMENT variable used for obtaining secrets in SSM
-ENV BITBUCKET_CONFIG=bitbucket.tgz \
+ENV BITBUCKET_CONFIG=bitbucket.properties \
     ENVIRONMENT=test   \
     DATABASE_NAME=bitbucketdb
 
@@ -83,6 +83,7 @@ RUN mkdir -p ${BITBUCKET_BACKUP_CLIENT_HOME} && \
     unzip -d ${BITBUCKET_BACKUP_CLIENT_HOME} /tmp/bitbucket-backup-distribution.zip && \
     mv /opt/backupclient/$(ls /opt/backupclient/) /opt/backupclient/bitbucket-backup-client && \
     chown -R bitbucket:bitbucket ${BITBUCKET_BACKUP_CLIENT_HOME}
+    mkdir ${BITBUCKET_HOME}/shared
 
 # Install aws cli
 USER root
