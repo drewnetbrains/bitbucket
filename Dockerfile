@@ -49,6 +49,7 @@ RUN export MYSQL_DRIVER_VERSION=5.1.44 && \
     tar zxf /tmp/bitbucket.tar.gz -C /tmp && \
     mv /tmp/atlassian-bitbucket-${BITBUCKET_VERSION} /tmp/bitbucket && \
     mkdir -p ${BITBUCKET_HOME} && \
+    mkdir ${BITBUCKET_HOME}/shared  && \
     mkdir -p /opt && \
     mv /tmp/bitbucket /opt/bitbucket && \
     # Install database drivers
@@ -83,7 +84,7 @@ RUN mkdir -p ${BITBUCKET_BACKUP_CLIENT_HOME} && \
     unzip -d ${BITBUCKET_BACKUP_CLIENT_HOME} /tmp/bitbucket-backup-distribution.zip && \
     mv /opt/backupclient/$(ls /opt/backupclient/) /opt/backupclient/bitbucket-backup-client && \
     chown -R bitbucket:bitbucket ${BITBUCKET_BACKUP_CLIENT_HOME}
-    mkdir ${BITBUCKET_HOME}/shared
+
 
 # Install aws cli
 USER root
